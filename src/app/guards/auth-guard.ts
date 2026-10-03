@@ -19,7 +19,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   //   return true; // دسترسی مجاز است
   // }
 
-  return authService.isAuthenticated()
+  return authService.isLoggedIn()
     ? true
     : router.createUrlTree(['/', 'login'], {
         queryParams: { returnUrl: state.url },
