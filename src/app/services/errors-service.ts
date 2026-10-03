@@ -18,12 +18,23 @@ export class ErrorsService {
   //   private readonly dialog = inject(MatDialog);
 
   // Converts an unknown error into a friendly message for the user.
-  public getErrorMessage(error: unknown): string {
+  public getErrorMessage(error: unknown, operation?: string): string {
     if (error instanceof HttpErrorResponse) {
       switch (error.status) {
         case 0:
           return 'Unable to connect to the server. Please check your connection and try again.';
         case 401:
+          if (
+            typeof error.error === 'object' &&
+            error.error !== null &&
+            'message' in error.error &&
+            typeof error.error.message === 'string'
+          ) {
+            return error.error.message;
+          }
+          if (operation === 'authentication-service::login') {
+            return 'Invalid email or password. Please try again.';
+          }
           return 'Your session has expired. Please sign in again.';
         case 403:
           return 'You do not have permission to perform this action.';
@@ -57,9 +68,9 @@ export class ErrorsService {
   public handleError<T>(
     operation: string,
     errorAction: ErrorAction = { showErrorInDialog: true },
-  ): (error: any) => Observable<ErrorResponse<T>> {
-    return (error: any): Observable<ErrorResponse<T>> => {
-      const message = this.getErrorMessage(error);
+  ): (error: unknown) => Observable<ErrorResponse<T>> {
+    return (error: unknown): Observable<ErrorResponse<T>> => {
+      const message = this.getErrorMessage(error, operation);
 
       if (errorAction.showErrorInDialog) {
         // Show error in a dialog (you can implement your own dialog service)
@@ -69,9 +80,8 @@ export class ErrorsService {
         console.error(`Error in ${operation}:`, message, error);
       }
 
-      return of(
-        new ErrorResponse<T>(error.status, error.message || 'An unexpected error occurred.'),
-      );
+      const status = error instanceof HttpErrorResponse ? error.status : 0;
+      return of(new ErrorResponse<T>(status, message));
     };
   }
 }

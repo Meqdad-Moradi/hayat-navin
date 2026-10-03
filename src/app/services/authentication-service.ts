@@ -7,6 +7,11 @@ import { Observable, throwError } from 'rxjs';
 import { SessionStorage } from '../helpers/session-storage';
 import { environment } from '../environments/environment';
 
+interface LoginResponse {
+  accessToken: string;
+  refreshToken: string;
+}
+
 /**
  * @class AuthenticationService
  * @description مدیریت کامل فرآیند ورود، خروج، وضعیت کاربر و تمدید داینامیک توکن‌ها.
@@ -78,8 +83,8 @@ export class AuthenticationService {
    * @returns Observable<User | ErrorResponse<string>>
    * @description ارسال اطلاعات ورود به سرور و راه‌اندازی سشن‌های کاربری در صورت تایید.
    */
-  public login(email: string, password: string): Observable<any> {
-    return this.http.post<any>('/auth/login', { email, password }).pipe(
+  public login(email: string, password: string): Observable<LoginResponse | ErrorResponse<string>> {
+    return this.http.post<LoginResponse>(`${this.API_URL}/login`, { email, password }).pipe(
       tap((res) => {
         // مرحله ۱: ذخیره کردن کلیدهای دیجیتالی (توکن‌ها) در مرورگر
         this.setTokens(res.accessToken, res.refreshToken);
