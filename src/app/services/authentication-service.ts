@@ -1,4 +1,4 @@
-import { computed, inject, Service, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { User } from '../models/user-model';
 import { HttpClient } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
@@ -7,18 +7,31 @@ import { Observable, throwError } from 'rxjs';
 import { SessionStorage } from '../helpers/session-storage';
 import { environment } from '../environments/environment';
 
-@Service()
+/**
+ * @class AuthenticationService
+ * @description مدیریت کامل فرآیند ورود، خروج، وضعیت کاربر و تمدید داینامیک توکن‌ها.
+ */
+@Injectable({
+  providedIn: 'root',
+})
 export class AuthenticationService {
   private http = inject(HttpClient);
   private errorService = inject(ErrorsService);
 
+  // آدرس‌های پایه مربوط به بخش بک‌اند
   private readonly API_URL = environment.apiUrls.authUrl;
   private readonly storeKey = 'me';
-  private readonly sessionStorage = new SessionStorage();
-  private currentUserSignal = signal<User | null>(this.sessionStorage.get<User>(this.storeKey));
+  private readonly sessionStorageWrapper = new SessionStorage();
 
+  // مدیریت وضعیت کاربر فعلی با استفاده از انگولار سیگنالز (Angular Signals)
+  private currentUserSignal = signal<User | null>(
+    this.sessionStorageWrapper.get<User>(this.storeKey),
+  );
+
+  // تعریف متغیر عمومی وضعیت به صورت Readonly برای استفاده امن در کامپوننت‌ها
   public currentUser = this.currentUserSignal.asReadonly();
 
+  // وضعیت احراز هویت (آیا کاربر وارد شده است یا خیر؟)
   public isAuthenticated = computed(() => !!this.currentUserSignal());
 
   constructor() {
@@ -26,69 +39,120 @@ export class AuthenticationService {
   }
 
   /**
+   * @private setTokens
+   * @description ذخیره امن توکن‌ها در ستورج پیش‌فرض مرورگر به صورت رشته متنی ساده.
+   */
+  private setTokens(accessToken: string, refreshToken: string): void {
+    sessionStorage.setItem('access_token', accessToken);
+    sessionStorage.setItem('refresh_token', refreshToken);
+  }
+
+  /**
+   * @public getAccessToken
+   * @description دریافت آخرین اکسس توکن فعال از حافظه مرورگر.
+   */
+  public getAccessToken(): string | null {
+    return sessionStorage.getItem('access_token');
+  }
+
+  /**
+   * @public getRefreshToken
+   * @description دریافت رفرش توکن فعال جهت استفاده در مواقع انقضا.
+   */
+  public getRefreshToken(): string | null {
+    return sessionStorage.getItem('refresh_token');
+  }
+
+  /**
+   * @public updateAccessToken
+   * @description به روزرسانی رشته اکسس توکن پس از عملیات رفرش توکن موفق.
+   */
+  public updateAccessToken(token: string): void {
+    sessionStorage.setItem('access_token', token);
+  }
+
+  /**
    * login
    * @param email string
    * @param password string
    * @returns Observable<User | ErrorResponse<string>>
+   * @description ارسال اطلاعات ورود به سرور و راه‌اندازی سشن‌های کاربری در صورت تایید.
    */
-  public login(email: string, password: string): Observable<User | ErrorResponse<string>> {
-    return this.http.post<User>(this.API_URL + '/login', { email, password }).pipe(
-      tap((user) => {
-        this.sessionStorage.set(this.storeKey, user);
-        this.currentUserSignal.set(user);
+  public login(email: string, password: string): Observable<any> {
+    return this.http.post<any>('/auth/login', { email, password }).pipe(
+      tap((res) => {
+        // مرحله ۱: ذخیره کردن کلیدهای دیجیتالی (توکن‌ها) در مرورگر
+        this.setTokens(res.accessToken, res.refreshToken);
+
+        // مرحله ۲: تشکیل شیء کاربر بر اساس مدل استاندارد پروژه
+        const userObj: User = {
+          email: email,
+          // سایر مشخصات کاربر مثل نام و نقش‌ها را می‌توانید اینجا بسازید
+        } as User;
+
+        // مرحله ۳: به‌روزرسانی سیستم مدیریت وضعیت فرانت‌اند
+        this.sessionStorageWrapper.set(this.storeKey, userObj);
+        this.currentUserSignal.set(userObj);
       }),
+      // مدیریت خطاها در صورت ورود اطلاعات نامعتبر
       catchError(this.errorService.handleError<string>('authentication-service::login')),
     );
   }
 
   /**
    * logout
+   * @description پاکسازی تمامی حافظه‌های محلی مرورگر و تغییر وضعیت کاربر به حالت مهمان.
    */
   public logout(): void {
-    this.sessionStorage.remove(this.storeKey);
+    sessionStorage.removeItem('access_token');
+    sessionStorage.removeItem('refresh_token');
+    this.sessionStorageWrapper.remove(this.storeKey);
     this.currentUserSignal.set(null);
-    //   localStorage.removeItem('access_token');
-    //   localStorage.removeItem('refresh_token');
   }
 
   /**
    * refreshToken
-   * @description Refreshes the access token using the refresh token stored in local storage.
-   * @returns Observable<{ token: string }>
+   * @description تمدید اکسس توکن منقضی شده با استفاده از رفرش توکن ذخیره شده.
+   * @returns Observable<{ accessToken: string }>
    */
-  public refreshToken(): Observable<{ token: string }> {
-    // ریفرش توکن بلندمدت را از حافظه برمی‌داریم
-    const refreshToken = this.sessionStorage.get<User>(this.storeKey)?.refreshToken;
+  public refreshToken(): Observable<{ accessToken: string }> {
+    // مرحله ۱: بازیابی رفرش توکن بلندمدت از حافظه
+    const refreshToken = this.getRefreshToken();
 
-    // اگر ریفرش توکن هم وجود نداشته باشد، یعنی کلاً کاربر دسترسی ندارد
+    // مرحله ۲: اگر کاربر فاقد رفرش توکن بود، دسترسی فوراً متوقف می‌شود
     if (!refreshToken) {
       return throwError(() => new Error('No refresh token available'));
     }
 
-    // درخواست POST به بک‌اند برای دریافت اکسس توکن جدید
-    // توجه: ما ریفرش توکن را در بدنه (Body) درخواست برای سرور می‌فرستیم
+    // مرحله ۳: درخواست ارسال رفرش توکن در بدنه POST به سرور جهت دریافت توکن جدید
     return this.http
-      .post<{ token: string }>(this.API_URL + '/refresh-token', {
-        refreshToken: refreshToken,
+      .post<{ accessToken: string }>(this.API_URL + '/refresh-token', {
+        refreshToken,
       })
       .pipe(
         tap((response) => {
-          // به محض اینکه سرور اکسس توکن جدید را داد، آن را جایگزین توکن قدیمی در مرورگر می‌کنیم
-          const newToken = response.token;
-          const currentUser = { ...this.currentUserSignal(), accessToken: newToken } as User;
-          this.sessionStorage.set(this.storeKey, currentUser);
-          this.currentUserSignal.set(currentUser);
+          const newToken = response.accessToken;
+
+          // مرحله ۴: ذخیره اکسس توکن جدید به دست آمده در مرورگر
+          this.updateAccessToken(newToken);
+
+          // مرحله ۵: اعمال تغییرات جدید روی سیگنال‌های فعال اپلیکیشن
+          if (this.currentUserSignal()) {
+            const currentUser = { ...this.currentUserSignal() } as User;
+            this.sessionStorageWrapper.set(this.storeKey, currentUser);
+            this.currentUserSignal.set(currentUser);
+          }
         }),
       );
   }
 
   /**
    * initializeUserFromSession
-   * Initializes the current user from session storage if available.
-   * This method is called in the constructor to ensure that the user state is restored on page reloads.
+   * @private
+   * @description بازیابی وضعیت کاربر از سشن استورج در زمان رفرش کل صفحه مرورگر (F5) جهت جلوگیری از پریدن لاگین.
    */
   private initializeUserFromSession(): void {
-    const token = this.sessionStorage.get<User>(this.storeKey);
+    const token = this.sessionStorageWrapper.get<User>(this.storeKey);
     if (token) {
       this.currentUserSignal.set(token);
     }

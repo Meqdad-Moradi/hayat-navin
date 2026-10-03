@@ -9,27 +9,43 @@ import { AuthenticationService } from '../services/authentication-service';
 import { catchError, filter, switchMap, take } from 'rxjs/operators';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 
+// پرچم وضعیت: آیا در همین لحظه یک درخواست رفرش توکن فعال در بک‌اند داریم؟
 let isRefreshing = false;
+
+// صف انتظار دیجیتالی: تمام درخواست‌های موازی فاقد توکن در این سابجکت منتظر می‌مانند
 const refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
+/**
+ * authInterceptor
+ * @description اینترسپتور اصلی احراز هویت جهت تزریق توکن‌ها و مدیریت خطای انقضای 401.
+ */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthenticationService);
-  const token = authService.currentUser()?.accessToken; // access_token from the current user
+
+  // 🛡️ گارد محافظتی اصلی: اگر مسیر شامل لاگین یا رفرش توکن بود، اینترسپتور نباید کاری انجام دهد
+  if (req.url.includes('/auth/login') || req.url.includes('/auth/refresh-token')) {
+    return next(req);
+  }
+
+  // دریافت آخرین اکسس توکن معتبر از سرویس
+  const accessToken = authService.getAccessToken();
 
   let authReq = req;
 
-  if (token) {
-    authReq = injectToken(req, token);
+  // اگر توکن موجود بود، آن را به هدر درخواست الصاق (تزریق) می‌کنیم
+  if (accessToken) {
+    authReq = injectToken(req, accessToken);
   }
 
+  // ارسال درخواست به شبکه و مانیتور کردن خطاهای احتمالی پاسخ
   return next(authReq).pipe(
     catchError((error) => {
-      // اگر خطا از نوع HTTP بود و کد آن 401 بود، یعنی توکن باطل شده!
+      // 🚨 بررسی وقوع خطای ۴۰۱ (انقضای توکن)
       if (error instanceof HttpErrorResponse && error.status === 401) {
-        // حالا باید فرآیند پیچیده تمدید توکن (Refresh) را شروع کنیم
+        // ارجاع به تابع اصلی مدیریت تمدید توکن پشت‌صحنه
         return handle401Error(authReq, next, authService);
       }
-      // اگر خطای دیگری بود (مثل 500 یا 404)، کاری به آن نداریم و پاس می‌دهیم برود
+      // عبور دادن خطاهای دیگر اپلیکیشن (مانند خطای سرور ۵۰۰ یا خطای ۴۰۴) بدون تغییر
       return throwError(() => error);
     }),
   );
@@ -37,10 +53,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
 /**
  * injectToken
- * Injects the authentication token into the HTTP request.
- * @param req HttpRequest<any> - The original HTTP request.
- * @param token string - The authentication token.
- * @returns HttpRequest<any> - The modified HTTP request with the authentication header.
+ * @description تزریق کردن توکن به هدر Authorization به فرمت استاندارد Bearer Token.
+ * @param req HttpRequest<any> - درخواست اصلی
+ * @param token string - توکن اعتبارسنجی
+ * @returns HttpRequest<any> - درخواست شبیه‌سازی شده جدید همراه با هدر امنیت
  */
 function injectToken(req: HttpRequest<any>, token: string): HttpRequest<any> {
   return req.clone({
@@ -50,48 +66,46 @@ function injectToken(req: HttpRequest<any>, token: string): HttpRequest<any> {
 
 /**
  * handle401Error
- * Handles 401 Unauthorized errors by attempting to refresh the token.
- * If a refresh is already in progress, it waits for the new token before retrying the request.
- * @param req HttpRequest<any> - The original HTTP request that resulted in a 401 error.
- * @param next HttpHandlerFn - The next handler in the HTTP request chain.
- * @param authService AuthenticationService - The authentication service used to refresh the token.
- * @returns Observable<any> - An observable that either retries the original request with a new token or throws an error.
+ * @description مدیریت معماری صف انتظار درخواست‌ها و صدا زدن متد تمدید توکن در بک‌اند.
  */
 function handle401Error(
   req: HttpRequest<any>,
   next: HttpHandlerFn,
   authService: AuthenticationService,
 ): Observable<any> {
-  // حالت الف: ما اولین درخواستی هستیم که به خطای 401 خورده است!
+  // ─── حالت اول: ما اولین درخواستی هستیم که ارور ۴۰۱ را کشف کرده‌ایم ───
   if (!isRefreshing) {
-    // اینترسپتور وضعیت isRefreshing را فعال می‌کند و درخواست "لیست محصولات" را موقتاً نگه می‌دارد.
-    isRefreshing = true; // کلید را روشن می‌کنیم تا بقیه درخواست‌ها بفهمند ما دست‌به‌کار شدیم
-    refreshTokenSubject.next(null); // سالن انتظار را خالی می‌کنیم
+    isRefreshing = true; // قفل کردن پرچم تا بقیه درخواست‌ها بدانند یک پروسه رفرش شروع شده
+    refreshTokenSubject.next(null); // پاکسازی و آماده‌سازی سالن انتظار دیجیتالی
 
-    // به سرور می‌گوییم: لطفاً با استفاده از Refresh Token، یک Access Token جدید به من بده
+    // ارسال درخواست تمدید توکن به سرور
     return authService.refreshToken().pipe(
       switchMap((res: any) => {
-        isRefreshing = false; // کارمان تمام شد، کلید را خاموش می‌کنیم
-        localStorage.setItem('access_token', res.token);
-        refreshTokenSubject.next(res.token); // توکن جدید را به تمام درخواست‌های منتظر در سالن اعلام می‌کنیم
+        isRefreshing = false; // باز کردن قفل پرچم پس از دریافت توکن جدید
 
-        // درخواست اولیه‌ای که به خطا خورده بود را دوباره با توکن جدید می‌فرستیم!
-        return next(injectToken(req, res.token));
+        // همسان‌سازی نام فیلد توکن دریافتی از سرور (پشتیبانی از فرمت‌های مختلف بک‌اند)
+        const newToken = res.accessToken || res.token;
+
+        authService.updateAccessToken(newToken);
+        refreshTokenSubject.next(newToken); // بوق زدن و فرستادن سیگنال توکن جدید به تمام درخواست‌های منتظر در صف
+
+        // تکرار خودکار درخواست اولیه شکست خورده با استفاده از توکن جدید صادر شده
+        return next(injectToken(req, newToken));
       }),
       catchError((err) => {
         isRefreshing = false;
-        authService.logout(); // اگر ریفرش توکن هم منقضی شده بود، کاربر لوگ‌اوت می‌شود
+        authService.logout(); // در صورتی که رفرش توکن هم اکسپایر شده باشد، کاربر کاملاً از سیستم خارج می‌شود
         return throwError(() => err);
       }),
     );
   }
-  // حالت ب: یک درخواست دیگر قبلاً پروسه ریفرش را شروع کرده و ما باید در صف منتظر بمانیم!
+
+  // ─── حالت دوم: یک درخواست موازی دیگر قبلاً پروسه رفرش را استارت زده و ما باید منتظر بمانیم ───
   else {
-    // اگر یک فرآیند ریفرش در جریان است، بقیه درخواست‌ها منتظر می‌مانند تا توکن جدید صادر شود
     return refreshTokenSubject.pipe(
-      filter((token) => token !== null), // منتظر می‌ماند تا بالاخره توکن جدید صادر و تزریق شود
-      take(1),
-      // به محض اینکه توکن جدید آمد، درخواست جاری را با توکن جدید کلون کرده و می‌فرستد
+      filter((token) => token !== null), // توقف در صف تا زمانی که توکن جدید در حالت اول صادر و غیر null شود
+      take(1), // پس از یک بار دریافت داده، اشتراک صف را تمام کن
+      // تکرار خودکار درخواست جاری به محض آزاد شدن صف با توکن جدید
       switchMap((token) => next(injectToken(req, token!))),
     );
   }
