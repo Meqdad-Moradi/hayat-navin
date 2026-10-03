@@ -1,9 +1,66 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { AuthenticationService } from '../../../services/authentication-service';
+import { initLoginModel } from '../../../models/login-model';
+import { email, form, FormField, FormRoot, required } from '@angular/forms/signals';
+import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
+import { ErrorResponse } from '../../../services/errors-service';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { BrandLogo } from '../../shared/brand-logo/brand-logo';
 
 @Component({
-  imports: [],
   selector: 'app-login',
-  styleUrl: './login.css',
   templateUrl: './login.html',
+  host: {
+    class: 'block min-h-screen',
+  },
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    FormField,
+    FormRoot,
+    BrandLogo,
+  ],
 })
-export class Login {}
+export class Login {
+  private authService = inject(AuthenticationService);
+
+  private loginModel = signal(initLoginModel());
+
+  protected loginForm = form(
+    this.loginModel,
+    (path) => {
+      required(path.email, { message: "Can't be empty!" });
+      required(path.password, { message: "Can't be empty!" });
+      email(path.email, { message: 'Invalid email format!' });
+    },
+    {
+      submission: {
+        action: async (field) => {
+          const { email, password } = field().value();
+          const result = await firstValueFrom(this.authService.login(email, password));
+
+          if (result instanceof ErrorResponse) {
+            return { kind: result.status?.toString(), message: result.value?.toString() };
+          }
+          console.log('Login successful:', result);
+          return undefined;
+        },
+      },
+    },
+  );
+
+  /**
+   * resetInput
+   * @param fieldName string
+   */
+  protected resetInput(fieldName: string): void {
+    this.loginModel.update((model) => ({ ...model, [fieldName]: '' }));
+  }
+}

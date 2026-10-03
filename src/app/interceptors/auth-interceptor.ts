@@ -14,7 +14,7 @@ const refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthenticationService);
-  const token = authService.currentUser()?.token; // access_token from the current user
+  const token = authService.currentUser()?.accessToken; // access_token from the current user
 
   let authReq = req;
 

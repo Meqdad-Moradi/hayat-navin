@@ -1,1 +1,131 @@
-<p>login works!</p>
+<main
+  class="grid min-h-screen grid-cols-1 bg-[#fbfcf9] font-['Roboto',sans-serif] text-[#18332e] lg:grid-cols-[0.92fr_1.08fr]"
+>
+  <section
+    class="flex min-h-screen flex-col items-center px-[7%] py-[26px] lg:px-[8%] lg:py-[42px]"
+    aria-labelledby="login-title"
+  >
+    <app-brand-logo class="self-start" />
+
+    <div class="my-auto w-full max-w-[400px] py-[60px] lg:py-0">
+      <p class="mb-[15px] text-[11px] font-bold tracking-[2px] text-[#347c68]">WELCOME BACK</p>
+      <h1
+        id="login-title"
+        class="mb-3 text-[clamp(32px,3.2vw,42px)] leading-[1.14] font-medium tracking-[-1.8px]"
+      >
+        Good to see you<span class="text-[#d79b68]">.</span>
+      </h1>
+      <p class="mb-[35px] text-[15px] leading-relaxed text-[#75837d]">
+        Sign in to continue to your account.
+      </p>
+
+      <form class="flex flex-col gap-[7px]" [formRoot]="loginForm" aria-label="Sign in">
+        <!-- email -->
+        <mat-form-field class="w-full" appearance="outline">
+          <mat-label>Email address</mat-label>
+          <input matInput type="email" autocomplete="email" [formField]="loginForm.email" />
+          <button
+            type="button"
+            matIconButton
+            matSuffix
+            aria-label="Clear email address"
+            tabIndex="-1"
+            (click)="resetInput('email')"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+          @if (loginForm.email().touched() && loginForm.email().errors().length) {
+            <mat-error>{{ loginForm.email().errors()[0]?.message }}</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- password -->
+        <mat-form-field class="w-full" appearance="outline">
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            type="password"
+            autocomplete="current-password"
+            [formField]="loginForm.password"
+          />
+          <button
+            type="button"
+            matIconButton
+            matSuffix
+            aria-label="Clear password"
+            tabIndex="-1"
+            (click)="resetInput('password')"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+          @if (loginForm.password().touched() && loginForm.password().errors().length) {
+            <mat-error>{{ loginForm.password().errors()[0]?.message }}</mat-error>
+          }
+        </mat-form-field>
+
+        <button
+          class="mt-[9px] flex min-h-[52px] w-full items-center justify-center gap-2.5 rounded-xl bg-[#18332e] text-[15px] font-medium tracking-[0.1px] text-white transition duration-150 hover:-translate-y-px hover:bg-[#347c68] motion-reduce:transition-none"
+          type="submit"
+          matButton="filled"
+          [disabled]="loginForm().submitting() || loginForm().invalid()"
+        >
+          @if (loginForm().submitting()) {
+            <mat-progress-spinner diameter="20" mode="indeterminate" />
+          } @else {
+            Sign in
+          }
+        </button>
+      </form>
+
+      <p class="mt-[23px] flex items-center justify-center gap-2 text-xs text-[#8b9691]">
+        <mat-icon class="!h-[15px] !w-[15px] !text-[15px]" aria-hidden="true">lock</mat-icon>
+        Your information is always kept private and secure.
+      </p>
+    </div>
+
+    <p class="m-0 self-center text-[11px] tracking-[0.2px] text-[#a0aaa5] lg:self-start">
+      © 2026 Hayat Navin
+    </p>
+  </section>
+
+  <aside
+    class="relative hidden min-h-screen items-center overflow-hidden bg-[radial-gradient(ellipse_at_75%_24%,rgba(185,207,163,0.3),transparent_32%),radial-gradient(ellipse_at_22%_88%,rgba(88,132,103,0.54),transparent_36%),linear-gradient(145deg,#294c42_0%,#183b35_53%,#152f2c_100%)] px-[8%] text-[#f8f7f0] lg:flex"
+    aria-label="A warm welcome"
+  >
+    <div
+      class="pointer-events-none absolute -top-[235px] -right-[190px] size-[660px] rounded-full border border-white/10"
+    ></div>
+    <div
+      class="pointer-events-none absolute -top-[154px] -right-[108px] size-[496px] rounded-full border border-white/10"
+    ></div>
+    <div
+      class="pointer-events-none absolute -top-[72px] -right-[27px] size-[332px] rounded-full border border-white/10"
+    ></div>
+
+    <div class="relative z-10 -mt-[18px] max-w-[440px]">
+      <span
+        class="mb-12 grid size-[52px] place-items-center rounded-[17px] border border-white/20 bg-white/[0.08] text-[#e8c89b] backdrop-blur-sm"
+      >
+        <mat-icon aria-hidden="true">sunny</mat-icon>
+      </span>
+      <p class="mb-[17px] text-[11px] font-bold tracking-[2px] text-[#c6d6b5]">
+        A FRESH PERSPECTIVE
+      </p>
+      <h2
+        class="mb-[19px] text-[clamp(44px,5.4vw,70px)] leading-[1.06] font-normal tracking-[-3px]"
+      >
+        Make space<br />for what matters.
+      </h2>
+      <p class="m-0 max-w-[320px] text-[15px] leading-[1.8] text-white/70">
+        Your next chapter is waiting. Pick up right where you left off.
+      </p>
+    </div>
+
+    <div
+      class="absolute right-[8%] bottom-12 left-[8%] flex items-center gap-3 text-[10px] font-medium tracking-[1.7px] text-white/55"
+    >
+      <span class="h-px w-[30px] bg-[#d7b38a]"></span>
+      <span>HERE'S TO WHAT'S NEXT</span>
+    </div>
+  </aside>
+</main>
