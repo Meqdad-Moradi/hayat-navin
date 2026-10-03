@@ -13,8 +13,6 @@ export class AuthenticationService {
 
   private readonly userUrl = 'users';
   private readonly storeKey = 'me';
-  private readonly accessTokenKey = 'access_token';
-  private readonly refreshTokenKey = 'refresh_token';
   private readonly sessionStorage = new SessionStorage();
   private currentUserSignal = signal<User | null>(this.sessionStorage.get<User>(this.storeKey));
 
@@ -71,7 +69,7 @@ export class AuthenticationService {
       .pipe(
         tap((response) => {
           // به محض اینکه سرور اکسس توکن جدید را داد، آن را جایگزین توکن قدیمی در مرورگر می‌کنیم
-          localStorage.setItem(this.accessTokenKey, response.token);
+          // localStorage.setItem(this.accessTokenKey, response.token);
           //   this.isAuthenticated.set(true);
         }),
       );
