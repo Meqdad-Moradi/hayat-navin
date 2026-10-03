@@ -36,6 +36,8 @@ export class Login {
 
   private loginModel = signal(initLoginModel());
 
+  protected hasAttemptedSubmit = signal(false);
+
   protected loginForm = form(
     this.loginModel,
     (path) => {
@@ -66,5 +68,9 @@ export class Login {
    */
   protected resetInput(fieldName: string): void {
     this.loginModel.update((model) => ({ ...model, [fieldName]: '' }));
+  }
+
+  protected onSubmit(): void {
+    this.hasAttemptedSubmit.set(true);
   }
 }

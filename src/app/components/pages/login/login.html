@@ -20,6 +20,22 @@
       </p>
 
       <form class="flex flex-col gap-[7px]" [formRoot]="loginForm" aria-label="Sign in">
+        @if (loginForm().errors().length) {
+          <div
+            class="mb-2 flex items-start gap-3 rounded-xl border border-(--mat-sys-error)/25 bg-(--mat-sys-error-container) p-4 text-(--mat-sys-on-error-container)"
+            role="alert"
+            aria-live="assertive"
+          >
+            <mat-icon class="mt-0.5 shrink-0" aria-hidden="true">error</mat-icon>
+            <div>
+              <p class="mb-1 text-sm font-semibold">Check your details</p>
+              <p class="m-0 text-sm leading-relaxed">
+                {{ loginForm().errors()[0]?.message }}
+              </p>
+            </div>
+          </div>
+        }
+
         <!-- email -->
         <mat-form-field class="w-full" appearance="outline">
           <mat-label>Email address</mat-label>
@@ -58,7 +74,10 @@
           >
             <mat-icon>close</mat-icon>
           </button>
-          @if (loginForm.password().touched() && loginForm.password().errors().length) {
+          @if (
+            (loginForm.password().touched() || hasAttemptedSubmit()) &&
+            loginForm.password().errors().length
+          ) {
             <mat-error>{{ loginForm.password().errors()[0]?.message }}</mat-error>
           }
         </mat-form-field>
@@ -67,7 +86,7 @@
           class="mt-[9px] flex min-h-[52px] w-full items-center justify-center gap-2.5 rounded-xl bg-(--ink) text-[15px] font-medium tracking-[0.1px] text-(--on-primary) transition duration-150 hover:-translate-y-px hover:bg-(--primary) motion-reduce:transition-none"
           type="submit"
           matButton="filled"
-          [disabled]="loginForm().submitting() || loginForm().invalid()"
+          [disabled]="loginForm().submitting()"
         >
           @if (loginForm().submitting()) {
             <mat-progress-spinner diameter="20" mode="indeterminate" />
