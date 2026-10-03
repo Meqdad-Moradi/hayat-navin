@@ -24,13 +24,16 @@ export class AuthenticationService {
   // آدرس‌های پایه مربوط به بخش بک‌اند
   private readonly API_URL = environment.apiUrls.authUrl;
 
+  private readonly accessTokenKey = 'access_token';
+  private readonly refreshTokenKey = 'refresh_token';
+
   /**
    * @private setTokens
    * @description ذخیره امن توکن‌ها در ستورج پیش‌فرض مرورگر به صورت رشته متنی ساده.
    */
   private setTokens(accessToken: string, refreshToken: string): void {
-    sessionStorage.setItem('access_token', accessToken);
-    sessionStorage.setItem('refresh_token', refreshToken);
+    sessionStorage.setItem(this.accessTokenKey, accessToken);
+    sessionStorage.setItem(this.refreshTokenKey, refreshToken);
   }
 
   /**
@@ -38,7 +41,7 @@ export class AuthenticationService {
    * @description دریافت آخرین اکسس توکن فعال از حافظه مرورگر.
    */
   public getAccessToken(): string | null {
-    return sessionStorage.getItem('access_token');
+    return sessionStorage.getItem(this.accessTokenKey);
   }
 
   /**
@@ -46,7 +49,7 @@ export class AuthenticationService {
    * @description دریافت رفرش توکن فعال جهت استفاده در مواقع انقضا.
    */
   public getRefreshToken(): string | null {
-    return sessionStorage.getItem('refresh_token');
+    return sessionStorage.getItem(this.refreshTokenKey);
   }
 
   /**
@@ -54,7 +57,7 @@ export class AuthenticationService {
    * @description به روزرسانی رشته اکسس توکن پس از عملیات رفرش توکن موفق.
    */
   public updateAccessToken(token: string): void {
-    sessionStorage.setItem('access_token', token);
+    sessionStorage.setItem(this.accessTokenKey, token);
   }
 
   /**
@@ -80,8 +83,8 @@ export class AuthenticationService {
    * @description پاکسازی تمامی حافظه‌های محلی مرورگر و تغییر وضعیت کاربر به حالت مهمان.
    */
   public logout(): void {
-    sessionStorage.removeItem('access_token');
-    sessionStorage.removeItem('refresh_token');
+    sessionStorage.removeItem(this.accessTokenKey);
+    sessionStorage.removeItem(this.refreshTokenKey);
   }
 
   /**
@@ -111,6 +114,8 @@ export class AuthenticationService {
    * @returns boolean
    */
   public isLoggedIn(): boolean {
-    return !!sessionStorage.getItem('access_token') && !!sessionStorage.getItem('refresh_toke');
+    return (
+      !!sessionStorage.getItem(this.accessTokenKey) && !!sessionStorage.getItem('refresh_toke')
+    );
   }
 }
