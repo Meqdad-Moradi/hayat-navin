@@ -11,7 +11,7 @@ export class AuthenticationService {
   private http = inject(HttpClient);
   private errorService = inject(ErrorsService);
 
-  private readonly userUrl = 'users';
+  private readonly API_URL = 'api/auth';
   private readonly storeKey = 'me';
   private readonly sessionStorage = new SessionStorage();
   private currentUserSignal = signal<User | null>(this.sessionStorage.get<User>(this.storeKey));
@@ -31,7 +31,7 @@ export class AuthenticationService {
    * @returns Observable<User | ErrorResponse<string>>
    */
   public login(email: string, password: string): Observable<User | ErrorResponse<string>> {
-    return this.http.post<User>(this.userUrl, { email, password }).pipe(
+    return this.http.post<User>(this.API_URL + '/login', { email, password }).pipe(
       tap((user) => {
         this.sessionStorage.set(this.storeKey, user);
         this.currentUserSignal.set(user);
@@ -50,10 +50,14 @@ export class AuthenticationService {
     //   localStorage.removeItem('refresh_token');
   }
 
-  // ۱. متد ریفرش توکن که اینترسپتور آن را صدا می‌زند
+  /**
+   * refreshToken
+   * @description Refreshes the access token using the refresh token stored in local storage.
+   * @returns Observable<{ token: string }>
+   */
   public refreshToken(): Observable<{ token: string }> {
     // ریفرش توکن بلندمدت را از حافظه برمی‌داریم
-    const refreshToken = localStorage.getItem('refresh_token');
+    const refreshToken = this.sessionStorage.get<User>(this.storeKey)?.refreshToken;
 
     // اگر ریفرش توکن هم وجود نداشته باشد، یعنی کلاً کاربر دسترسی ندارد
     if (!refreshToken) {
@@ -63,14 +67,16 @@ export class AuthenticationService {
     // درخواست POST به بک‌اند برای دریافت اکسس توکن جدید
     // توجه: ما ریفرش توکن را در بدنه (Body) درخواست برای سرور می‌فرستیم
     return this.http
-      .post<{ token: string }>('/api/auth/refresh', {
+      .post<{ token: string }>(this.API_URL + '/refresh-token', {
         refreshToken: refreshToken,
       })
       .pipe(
         tap((response) => {
           // به محض اینکه سرور اکسس توکن جدید را داد، آن را جایگزین توکن قدیمی در مرورگر می‌کنیم
-          // localStorage.setItem(this.accessTokenKey, response.token);
-          //   this.isAuthenticated.set(true);
+          const newToken = response.token;
+          const currentUser = { ...this.currentUserSignal(), accessToken: newToken } as User;
+          this.sessionStorage.set(this.storeKey, currentUser);
+          this.currentUserSignal.set(currentUser);
         }),
       );
   }
