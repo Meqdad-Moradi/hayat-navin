@@ -9,12 +9,15 @@ html {
   height: 100%;
   @include mat.theme(
     (
-      color: (
-        primary: mat.$azure-palette,
-        tertiary: mat.$blue-palette,
-      ),
+      color: mat.$green-palette,
       typography: Roboto,
       density: 0,
+    )
+  );
+  @include mat.theme-overrides(
+    (
+      primary: #347c68,
+      on-primary: #ffffff,
     )
   );
 }
