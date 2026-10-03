@@ -1,5 +1,5 @@
 <main
-  class="grid min-h-screen grid-cols-1 bg-[#fbfcf9] font-['Roboto',sans-serif] text-[#18332e] lg:grid-cols-[0.92fr_1.08fr]"
+  class="grid min-h-screen grid-cols-1 bg-(--canvas) font-['Roboto',sans-serif] text-(--ink) lg:grid-cols-[0.92fr_1.08fr]"
 >
   <section
     class="flex min-h-screen flex-col items-center px-[7%] py-[26px] lg:px-[8%] lg:py-[42px]"
@@ -8,14 +8,14 @@
     <app-brand-logo class="self-start" />
 
     <div class="my-auto w-full max-w-[400px] py-[60px] lg:py-0">
-      <p class="mb-[15px] text-[11px] font-bold tracking-[2px] text-[#347c68]">WELCOME BACK</p>
+      <p class="mb-[15px] text-[11px] font-bold tracking-[2px] text-(--primary)">WELCOME BACK</p>
       <h1
         id="login-title"
         class="mb-3 text-[clamp(32px,3.2vw,42px)] leading-[1.14] font-medium tracking-[-1.8px]"
       >
-        Good to see you<span class="text-[#d79b68]">.</span>
+        Good to see you<span class="text-(--accent)">.</span>
       </h1>
-      <p class="mb-[35px] text-[15px] leading-relaxed text-[#75837d]">
+      <p class="mb-[35px] text-[15px] leading-relaxed text-(--text-muted)">
         Sign in to continue to your account.
       </p>
 
@@ -64,7 +64,7 @@
         </mat-form-field>
 
         <button
-          class="mt-[9px] flex min-h-[52px] w-full items-center justify-center gap-2.5 rounded-xl bg-[#18332e] text-[15px] font-medium tracking-[0.1px] text-white transition duration-150 hover:-translate-y-px hover:bg-[#347c68] motion-reduce:transition-none"
+          class="mt-[9px] flex min-h-[52px] w-full items-center justify-center gap-2.5 rounded-xl bg-(--ink) text-[15px] font-medium tracking-[0.1px] text-(--on-primary) transition duration-150 hover:-translate-y-px hover:bg-(--primary) motion-reduce:transition-none"
           type="submit"
           matButton="filled"
           [disabled]="loginForm().submitting() || loginForm().invalid()"
@@ -77,38 +77,38 @@
         </button>
       </form>
 
-      <p class="mt-[23px] flex items-center justify-center gap-2 text-xs text-[#8b9691]">
+      <p class="mt-[23px] flex items-center justify-center gap-2 text-xs text-(--text-subtle)">
         <mat-icon class="!h-[15px] !w-[15px] !text-[15px]" aria-hidden="true">lock</mat-icon>
         Your information is always kept private and secure.
       </p>
     </div>
 
-    <p class="m-0 self-center text-[11px] tracking-[0.2px] text-[#a0aaa5] lg:self-start">
+    <p class="m-0 self-center text-[11px] tracking-[0.2px] text-(--text-faint) lg:self-start">
       © 2026 Hayat Navin
     </p>
   </section>
 
   <aside
-    class="relative hidden min-h-screen items-center overflow-hidden bg-[radial-gradient(ellipse_at_75%_24%,rgba(185,207,163,0.3),transparent_32%),radial-gradient(ellipse_at_22%_88%,rgba(88,132,103,0.54),transparent_36%),linear-gradient(145deg,#294c42_0%,#183b35_53%,#152f2c_100%)] px-[8%] text-[#f8f7f0] lg:flex"
+    class="relative hidden min-h-screen items-center overflow-hidden bg-[image:var(--welcome-background)] px-[8%] text-(--welcome-text) lg:flex"
     aria-label="A warm welcome"
   >
     <div
-      class="pointer-events-none absolute -top-[235px] -right-[190px] size-[660px] rounded-full border border-white/10"
+      class="pointer-events-none absolute -top-[235px] -right-[190px] size-[660px] rounded-full border border-(--welcome-orbit)"
     ></div>
     <div
-      class="pointer-events-none absolute -top-[154px] -right-[108px] size-[496px] rounded-full border border-white/10"
+      class="pointer-events-none absolute -top-[154px] -right-[108px] size-[496px] rounded-full border border-(--welcome-orbit)"
     ></div>
     <div
-      class="pointer-events-none absolute -top-[72px] -right-[27px] size-[332px] rounded-full border border-white/10"
+      class="pointer-events-none absolute -top-[72px] -right-[27px] size-[332px] rounded-full border border-(--welcome-orbit)"
     ></div>
 
     <div class="relative z-10 -mt-[18px] max-w-[440px]">
       <span
-        class="mb-12 grid size-[52px] place-items-center rounded-[17px] border border-white/20 bg-white/[0.08] text-[#e8c89b] backdrop-blur-sm"
+        class="mb-12 grid size-[52px] place-items-center rounded-[17px] border border-(--welcome-icon-border) bg-(--welcome-icon-background) text-(--welcome-icon-text) backdrop-blur-sm"
       >
         <mat-icon aria-hidden="true">sunny</mat-icon>
       </span>
-      <p class="mb-[17px] text-[11px] font-bold tracking-[2px] text-[#c6d6b5]">
+      <p class="mb-[17px] text-[11px] font-bold tracking-[2px] text-(--welcome-eyebrow)">
         A FRESH PERSPECTIVE
       </p>
       <h2
@@ -116,15 +116,15 @@
       >
         Make space<br />for what matters.
       </h2>
-      <p class="m-0 max-w-[320px] text-[15px] leading-[1.8] text-white/70">
+      <p class="m-0 max-w-[320px] text-[15px] leading-[1.8] text-(--welcome-text)/70">
         Your next chapter is waiting. Pick up right where you left off.
       </p>
     </div>
 
     <div
-      class="absolute right-[8%] bottom-12 left-[8%] flex items-center gap-3 text-[10px] font-medium tracking-[1.7px] text-white/55"
+      class="absolute right-[8%] bottom-12 left-[8%] flex items-center gap-3 text-[10px] font-medium tracking-[1.7px] text-(--welcome-caption)"
     >
-      <span class="h-px w-[30px] bg-[#d7b38a]"></span>
+      <span class="h-px w-[30px] bg-(--welcome-line)"></span>
       <span>HERE'S TO WHAT'S NEXT</span>
     </div>
   </aside>

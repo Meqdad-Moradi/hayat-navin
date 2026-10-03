@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BrandLogo } from '../../shared/brand-logo/brand-logo';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -30,6 +31,8 @@ import { BrandLogo } from '../../shared/brand-logo/brand-logo';
 })
 export class Login {
   private authService = inject(AuthenticationService);
+  private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
 
   private loginModel = signal(initLoginModel());
 
@@ -49,7 +52,8 @@ export class Login {
           if (result instanceof ErrorResponse) {
             return { kind: result.status?.toString(), message: result.value?.toString() };
           }
-          console.log('Login successful:', result);
+          const returnUrl = this.activatedRoute.snapshot.queryParamMap.get('returnUrl') ?? '/';
+          this.router.navigateByUrl(returnUrl);
           return undefined;
         },
       },

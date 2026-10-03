@@ -1,3 +1,26 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+
+:root {
+  --primary: #347c68;
+  --on-primary: #ffffff;
+  --ink: #18332e;
+  --canvas: #fbfcf9;
+  --accent: #d79b68;
+  --text-muted: #75837d;
+  --text-subtle: #8b9691;
+  --text-faint: #a0aaa5;
+  --welcome-text: #f8f7f0; 
+  --welcome-icon-text: #e8c89b;
+  --welcome-eyebrow: #c6d6b5;
+  --welcome-caption: rgb(248 247 240 / 55%);
+  --welcome-icon-border: rgb(255 255 255 / 20%);
+  --welcome-icon-background: rgb(255 255 255 / 8%);
+  --welcome-orbit: rgb(241 239 211 / 12%);
+  --welcome-line: #d7b38a;
+  --welcome-background:
+    radial-gradient(ellipse at 75% 24%, rgb(185 207 163 / 30%), transparent 32%),
+    radial-gradient(ellipse at 22% 88%, rgb(88 132 103 / 54%), transparent 36%),
+    linear-gradient(145deg, #294c42 0%, #183b35 53%, #152f2c 100%);
+}

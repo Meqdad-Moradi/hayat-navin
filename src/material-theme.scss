@@ -16,8 +16,8 @@ html {
   );
   @include mat.theme-overrides(
     (
-      primary: #347c68,
-      on-primary: #ffffff,
+      primary: var(--primary),
+      on-primary: var(--on-primary),
     )
   );
 }
