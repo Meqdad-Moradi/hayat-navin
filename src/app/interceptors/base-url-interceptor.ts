@@ -7,6 +7,6 @@ export const baseUrlInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
   }
 
-  const url = `${environment.apiUrl}${req.url.startsWith('/') ? req.url : `/${req.url}`}`;
+  const url = `${environment.apiUrls.baseUrl}${req.url.startsWith('/') ? req.url : `/${req.url}`}`;
   return next(req.clone({ url }));
 };

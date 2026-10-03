@@ -5,13 +5,14 @@ import { catchError, tap } from 'rxjs/operators';
 import { ErrorResponse, ErrorsService } from './errors-service';
 import { Observable, throwError } from 'rxjs';
 import { SessionStorage } from '../helpers/session-storage';
+import { environment } from '../environments/environment';
 
 @Service()
 export class AuthenticationService {
   private http = inject(HttpClient);
   private errorService = inject(ErrorsService);
 
-  private readonly API_URL = 'api/auth';
+  private readonly API_URL = environment.apiUrls.authUrl;
   private readonly storeKey = 'me';
   private readonly sessionStorage = new SessionStorage();
   private currentUserSignal = signal<User | null>(this.sessionStorage.get<User>(this.storeKey));
