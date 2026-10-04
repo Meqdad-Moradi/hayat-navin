@@ -8,7 +8,7 @@ export const environment = {
     profile: {
       route: 'profile',
       name: 'Profile',
-      icon: 'face',
+      icon: 'person',
     },
     searchstudents: {
       route: 'searchpersons',
@@ -16,7 +16,7 @@ export const environment = {
       icon: 'search',
     },
     registration: {
-      route: 'register',
+      route: 'registration',
       name: 'Registration',
       icon: 'app_registration',
     },

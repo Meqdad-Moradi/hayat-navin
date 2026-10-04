@@ -5,7 +5,13 @@
         <mat-divider></mat-divider>
 
         <!-- profile -->
-        <button mat-list-item [routerLink]="['/', appRoutes.profile.route]">
+        <button
+          mat-list-item
+          [routerLink]="['/', appRoutes.profile.route]"
+          routerLinkActive="border-l-6! border-(--primary)!"
+          [routerLinkActiveOptions]="{ exact: true }"
+          onclick="blur()"
+        >
           <span class="material-icons-outlined" matListItemIcon>{{ appRoutes.profile.icon }}</span>
           <span matListItemTitle>{{ appRoutes.profile.name }}</span>
         </button>
@@ -13,7 +19,13 @@
         <mat-divider></mat-divider>
 
         <!-- search students -->
-        <button mat-list-item [routerLink]="['/', appRoutes.searchstudents.route]">
+        <button
+          mat-list-item
+          [routerLink]="['/', appRoutes.searchstudents.route]"
+          routerLinkActive="border-l-6! border-(--primary)!"
+          [routerLinkActiveOptions]="{ exact: true }"
+          onclick="blur()"
+        >
           <span class="material-icons-outlined" matListItemIcon>
             {{ appRoutes.searchstudents.icon }}
           </span>
@@ -23,7 +35,13 @@
         <mat-divider></mat-divider>
 
         <!-- regiseration -->
-        <button mat-list-item [routerLink]="['/', appRoutes.registration.route]">
+        <button
+          mat-list-item
+          [routerLink]="['/', appRoutes.registration.route]"
+          routerLinkActive="border-l-6! border-(--primary)!"
+          [routerLinkActiveOptions]="{ exact: true }"
+          onclick="blur()"
+        >
           <span class="material-icons-outlined" matListItemIcon>
             {{ appRoutes.registration.icon }}
           </span>
