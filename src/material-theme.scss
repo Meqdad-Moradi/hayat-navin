@@ -25,6 +25,7 @@ html {
       container-elevation-shadow: var(--mat-sys-level2),
     )
   );
+  @include mat.form-field-density(-2);
 }
 
 // reduce the mat-menu-button height
