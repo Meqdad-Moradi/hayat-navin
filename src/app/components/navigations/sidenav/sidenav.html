@@ -1,0 +1,26 @@
+<mat-drawer-container class="h-[calc(100vh-64px)]" autosize>
+  <mat-drawer #drawer class="rounded-[0px]!" mode="side" [opened]="isSidenavOpen()">
+    <div class="h-full w-full flex flex-col justify-between">
+      <mat-action-list>
+        <mat-divider></mat-divider>
+
+        <!-- weather -->
+        <button mat-list-item [routerLink]="['/', 'member']">
+          <span class="material-icons-outlined" matListItemIcon>search</span>
+          <span matListItemTitle>Search persons</span>
+        </button>
+
+        <mat-divider></mat-divider>
+      </mat-action-list>
+
+      <!-- logo -->
+      <div class="grid place-content-center py-4">
+        <app-brand-logo />
+      </div>
+    </div>
+  </mat-drawer>
+
+  <div class="h-full px-18">
+    <router-outlet></router-outlet>
+  </div>
+</mat-drawer-container>

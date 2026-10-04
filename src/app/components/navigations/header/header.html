@@ -1,0 +1,26 @@
+<mat-toolbar class="bg-(--primary)! text-white!">
+  <div class="w-full flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <button class="text-white!" matIconButton (click)="toggleSidenav()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span>Hayat Navin</span>
+    </div>
+
+    <div class="flex items-center">
+      <button class="text-white!" matIconButton>
+        <mat-icon>light_mode</mat-icon>
+      </button>
+      <button class="text-white!" matIconButton [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            Logout
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+</mat-toolbar>
