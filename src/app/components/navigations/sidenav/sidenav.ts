@@ -6,6 +6,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { BrandLogo } from '../../shared/brand-logo/brand-logo';
 import { SidenavService } from '../../../services/sidenav-service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-sidenav',
@@ -25,5 +26,6 @@ import { SidenavService } from '../../../services/sidenav-service';
 export class Sidenav {
   private sidenavService = inject(SidenavService);
 
-  isSidenavOpen = this.sidenavService.isSidenavOpen;
+  protected isSidenavOpen = this.sidenavService.isSidenavOpen;
+  protected appRoutes = environment.apps;
 }

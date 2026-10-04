@@ -6,6 +6,8 @@ import { NotFound } from './components/pages/not-found/not-found';
 import { authGuard } from './guards/auth-guard';
 import { Sidenav } from './components/navigations/sidenav/sidenav';
 import { userGuard } from './guards/user-guard';
+import { environment } from './environments/environment';
+import { SearchStudents } from './components/pages/search-students/search-students';
 
 export const routes: Routes = [
   {
@@ -13,7 +15,26 @@ export const routes: Routes = [
     component: Layout,
     canActivate: [authGuard],
     children: [
-      { path: '', component: Sidenav, pathMatch: 'full' },
+      {
+        path: '',
+        component: Sidenav,
+        children: [
+          {
+            path: environment.apps.searchstudents.route,
+            component: SearchStudents,
+            data: ['admin', 'studen'],
+            canActivate: [userGuard],
+            pathMatch: 'full',
+          },
+          {
+            path: environment.apps.registration.route,
+            component: Register,
+            data: ['admin'],
+            canActivate: [userGuard],
+            pathMatch: 'full',
+          },
+        ],
+      },
       // {
       //   path: 'admin-panel',
       //   canActivate: [userGuard], // 👈 لایه دوم: حالا نقش کاربر را چک کن
@@ -22,7 +43,6 @@ export const routes: Routes = [
       // },
     ],
   },
-  { path: 'register', component: Register, pathMatch: 'full' },
   { path: 'login', component: Login, pathMatch: 'full' },
   { path: '**', component: NotFound, pathMatch: 'full' },
 ];

@@ -4,10 +4,30 @@
       <mat-action-list>
         <mat-divider></mat-divider>
 
-        <!-- weather -->
-        <button mat-list-item [routerLink]="['/', 'member']">
-          <span class="material-icons-outlined" matListItemIcon>search</span>
-          <span matListItemTitle>Search persons</span>
+        <!-- profile -->
+        <button mat-list-item [routerLink]="['/', appRoutes.profile.route]">
+          <span class="material-icons-outlined" matListItemIcon>{{ appRoutes.profile.icon }}</span>
+          <span matListItemTitle>{{ appRoutes.profile.name }}</span>
+        </button>
+
+        <mat-divider></mat-divider>
+
+        <!-- search students -->
+        <button mat-list-item [routerLink]="['/', appRoutes.searchstudents.route]">
+          <span class="material-icons-outlined" matListItemIcon>
+            {{ appRoutes.searchstudents.icon }}
+          </span>
+          <span matListItemTitle>{{ appRoutes.searchstudents.name }}</span>
+        </button>
+
+        <mat-divider></mat-divider>
+
+        <!-- regiseration -->
+        <button mat-list-item [routerLink]="['/', appRoutes.registration.route]">
+          <span class="material-icons-outlined" matListItemIcon>
+            {{ appRoutes.registration.icon }}
+          </span>
+          <span matListItemTitle>{{ appRoutes.registration.name }}</span>
         </button>
 
         <mat-divider></mat-divider>
@@ -20,7 +40,7 @@
     </div>
   </mat-drawer>
 
-  <div class="h-full px-18">
+  <div class="h-full px-18 py-6">
     <router-outlet></router-outlet>
   </div>
 </mat-drawer-container>
