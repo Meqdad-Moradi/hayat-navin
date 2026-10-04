@@ -20,6 +20,16 @@ html {
       on-primary: var(--on-primary),
     )
   );
+  @include mat.sidenav-overrides(
+    (
+      container-elevation-shadow: var(--mat-sys-level2),
+    )
+  );
+}
+
+// reduce the mat-menu-button height
+button[mat-menu-item] {
+  min-height: 40px;
 }
 
 body {

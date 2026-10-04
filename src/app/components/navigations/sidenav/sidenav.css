@@ -1,0 +1,3 @@
+mat-drawer.mat-drawer-side {
+  box-shadow: var(--mat-sidenav-container-elevation-shadow);
+}
