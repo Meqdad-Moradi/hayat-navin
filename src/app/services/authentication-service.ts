@@ -114,8 +114,9 @@ export class AuthenticationService {
    * @returns boolean
    */
   public isLoggedIn(): boolean {
-    return !(
-      !!sessionStorage.getItem(this.accessTokenKey) && !!sessionStorage.getItem('refresh_toke')
+    return (
+      !!sessionStorage.getItem(this.accessTokenKey) &&
+      !!sessionStorage.getItem(this.refreshTokenKey)
     );
   }
 }
