@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { FieldTree, FormField } from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -17,9 +17,11 @@ export class CustomFormControl {
   readonly type = input<'text' | 'email' | 'tel' | 'password'>('text');
   readonly name = input.required<string>();
 
-  readonly resetInput = output<string>();
-
-  protected onResetInput(): void {
-    this.resetInput.emit(this.name());
+  /**
+   * resetInput
+   */
+  protected resetInput(): void {
+    this.field()().value.set(''); // remove the value
+    this.field()().reset(); // keep the input as untouched
   }
 }

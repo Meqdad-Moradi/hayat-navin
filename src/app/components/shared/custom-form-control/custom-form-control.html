@@ -1,14 +1,16 @@
 <mat-form-field class="w-full" appearance="outline">
   <mat-label>{{ label() }}</mat-label>
 
+  @let formField = field()();
+
   <input matInput [type]="type()" [formField]="field()" />
 
-  <button type="button" matIconButton matSuffix tabIndex="-1" (click)="onResetInput()">
+  <button type="button" matIconButton matSuffix tabIndex="-1" (click)="resetInput()">
     <mat-icon>close</mat-icon>
   </button>
 
   <!-- display error -->
-  @if (field()().touched() && field()().invalid()) {
-    <mat-error>{{ field()().errors()[0]?.message }}</mat-error>
+  @if (formField.touched() && formField.invalid()) {
+    <mat-error>{{ formField.errors()[0]?.message }}</mat-error>
   }
 </mat-form-field>

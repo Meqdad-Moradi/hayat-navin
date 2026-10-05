@@ -18,7 +18,6 @@
         [field]="registrationForm.studentName"
         label="Student's full name"
         name="studentName"
-        (resetInput)="resetInput($event)"
       />
 
       <app-custom-form-control
@@ -26,21 +25,18 @@
         label="Email"
         type="email"
         name="email"
-        (resetInput)="resetInput($event)"
       />
 
       <app-custom-form-control
         [field]="registrationForm.phone"
         label="Phone number"
         name="phone"
-        (resetInput)="resetInput($event)"
       />
 
       <app-custom-form-control
         [field]="registrationForm.courseName"
         label="Course name"
         name="courseName"
-        (resetInput)="resetInput($event)"
       />
 
       <div class="flex justify-end pt-2 md:col-span-2">
