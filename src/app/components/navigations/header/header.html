@@ -8,8 +8,14 @@
     </div>
 
     <div class="flex items-center">
-      <button class="text-white!" matIconButton>
-        <mat-icon>light_mode</mat-icon>
+      <button
+        class="text-white!"
+        matIconButton
+        matTooltip="Switch theme"
+        (click)="toggleTheme()"
+        [attr.aria-label]="isDark() ? 'Switch to light theme' : 'Switch to dark theme'"
+      >
+        <mat-icon>{{ isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
       </button>
       <button class="text-white!" matIconButton [matMenuTriggerFor]="menu">
         <mat-icon>more_vert</mat-icon>
@@ -17,8 +23,8 @@
 
       <mat-menu #menu="matMenu">
         <button mat-menu-item (click)="logout()">
-            <mat-icon>logout</mat-icon>
-            Logout
+          <mat-icon>logout</mat-icon>
+          Logout
         </button>
       </mat-menu>
     </div>

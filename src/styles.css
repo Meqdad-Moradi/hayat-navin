@@ -3,10 +3,14 @@
 @import 'tailwindcss';
 
 :root {
+  color-scheme: light;
+
   --primary: #347c68;
   --on-primary: #ffffff;
   --ink: #18332e;
   --canvas: #fbfcf9;
+  --surface: #fbfcf9;
+  --surface-border: rgb(24 51 46 / 10%);
   --accent: #d79b68;
   --text-muted: #75837d;
   --text-subtle: #8b9691;
@@ -23,6 +27,31 @@
     radial-gradient(ellipse at 75% 24%, rgb(185 207 163 / 30%), transparent 32%),
     radial-gradient(ellipse at 22% 88%, rgb(88 132 103 / 54%), transparent 36%),
     linear-gradient(145deg, #294c42 0%, #183b35 53%, #152f2c 100%);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --ink: #e6edf3;
+  --canvas: #181819;
+  --surface: #181819;
+  --surface-border: #30363d;
+  --accent: #2f81f7;
+  --text-muted: #7d8590;
+  --text-subtle: #6e7681;
+  --text-faint: #484f58;
+  --welcome-text: #e6edf3;
+  --welcome-icon-text: #79c0ff;
+  --welcome-eyebrow: #7ee787;
+  --welcome-caption: rgb(230 237 243 / 60%);
+  --welcome-icon-border: rgb(48 54 61 / 80%);
+  --welcome-icon-background: rgb(22 27 34 / 72%);
+  --welcome-orbit: rgb(110 118 129 / 18%);
+  --welcome-line: #2f81f7;
+  --welcome-background:
+    radial-gradient(ellipse at 76% 22%, rgb(47 129 247 / 18%), transparent 34%),
+    radial-gradient(ellipse at 18% 86%, rgb(35 134 54 / 14%), transparent 38%),
+    linear-gradient(145deg, #161b22 0%, #0d1117 53%, #010409 100%);
 }
 
 /* move mat-hint to left eadg */

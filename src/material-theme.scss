@@ -16,8 +16,10 @@ html {
   );
   @include mat.theme-overrides(
     (
-      primary: var(--primary),
-      on-primary: var(--on-primary),
+      primary: var(--primary), // Applies the application primary color
+      on-primary: var(--on-primary), // Sets foreground on primary surfaces
+      surface: var(--canvas), // Applies the application surface background
+      on-surface: var(--ink), // Sets foreground on application surfaces
     )
   );
   @include mat.sidenav-overrides(
@@ -34,11 +36,6 @@ button[mat-menu-item] {
 }
 
 body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
-  color-scheme: light;
-
   // Set a default background, font and text colors for the application using
   // Angular Material's system-level CSS variables. Learn more about these
   // variables at https://material.angular.dev/guide/system-variables

@@ -4,6 +4,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { ErrorResponse, ErrorsService } from './errors-service';
 import { Observable, throwError } from 'rxjs';
 import { environment } from '../environments/environment';
+import { Router } from '@angular/router';
 
 interface LoginResponse {
   accessToken: string;
@@ -20,6 +21,7 @@ interface LoginResponse {
 export class AuthenticationService {
   private http = inject(HttpClient);
   private errorService = inject(ErrorsService);
+  private router = inject(Router);
 
   // آدرس‌های پایه مربوط به بخش بک‌اند
   private readonly API_URL = environment.apiUrls.authUrl;
