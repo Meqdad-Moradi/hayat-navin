@@ -28,6 +28,7 @@ export class AuthenticationService {
 
   private readonly accessTokenKey = 'access_token';
   private readonly refreshTokenKey = 'refresh_token';
+  private readonly userKey = 'user_email';
 
   /**
    * @private setTokens
@@ -55,6 +56,53 @@ export class AuthenticationService {
   }
 
   /**
+   * getCurrentUserEmail
+   * @returns string | null - email
+   */
+  public getCurrentUserEmail(): string | null {
+    const storedEmail = sessionStorage.getItem(this.userKey);
+    if (storedEmail) {
+      return storedEmail;
+    }
+
+    const accessToken = this.getAccessToken();
+    const payload = accessToken?.split('.')[1];
+    if (!payload) {
+      return null;
+    }
+
+    try {
+      const normalizedPayload = payload.replace(/-/g, '+').replace(/_/g, '/');
+      const decodedPayload = atob(
+        normalizedPayload.padEnd(Math.ceil(normalizedPayload.length / 4) * 4, '='),
+      );
+      const claims: unknown = JSON.parse(decodedPayload);
+
+      if (
+        typeof claims === 'object' &&
+        claims !== null &&
+        'email' in claims &&
+        typeof claims.email === 'string'
+      ) {
+        this.updateCurrentUserEmail(claims.email);
+        return claims.email;
+      }
+    } catch (error: unknown) {
+      console.warn('Unable to restore the profile email from the access token.', error);
+    }
+
+    return null;
+  }
+
+  /**
+   * updateCurrentUserEmail
+   * @param email string
+   */
+  public updateCurrentUserEmail(email: string): void {
+    sessionStorage.setItem(this.userKey, email);
+  }
+
+  /**
    * @public updateAccessToken
    * @description به روزرسانی رشته اکسس توکن پس از عملیات رفرش توکن موفق.
    */
@@ -74,6 +122,7 @@ export class AuthenticationService {
       tap((res) => {
         // مرحله ۱: ذخیره کردن کلیدهای دیجیتالی (توکن‌ها) در مرورگر
         this.setTokens(res.accessToken, res.refreshToken);
+        this.updateCurrentUserEmail(email);
       }),
       // مدیریت خطاها در صورت ورود اطلاعات نامعتبر
       catchError(this.errorService.handleError<string>('authentication-service::login')),
@@ -87,6 +136,7 @@ export class AuthenticationService {
   public logout(): void {
     sessionStorage.removeItem(this.accessTokenKey);
     sessionStorage.removeItem(this.refreshTokenKey);
+    sessionStorage.removeItem(this.userKey);
   }
 
   /**
