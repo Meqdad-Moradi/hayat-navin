@@ -1,16 +1,10 @@
 <section class="mx-auto max-w-4xl py-6 sm:py-10" aria-labelledby="profile-title">
-  <header class="mb-8">
-    <p class="mb-2 text-xs font-bold tracking-[1.8px] text-(--primary)">YOUR ACCOUNT</p>
-    <h1
-      id="profile-title"
-      class="mb-2 text-[clamp(28px,4vw,38px)] leading-tight font-medium tracking-[-1px] text-(--ink)"
-    >
-      Profile settings
-    </h1>
-    <p class="m-0 text-sm leading-relaxed text-(--text-muted)">
-      Manage your personal details and keep your account up to date.
-    </p>
-  </header>
+  <app-page-header
+    eyebrow="YOUR ACCOUNT"
+    title="Profile settings"
+    titleId="profile-title"
+    description="Manage your personal details and keep your account up to date."
+  />
 
   @if (isLoading()) {
     <div

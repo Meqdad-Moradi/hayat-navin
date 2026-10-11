@@ -11,6 +11,7 @@ import { ApiProfileService } from '../../../services/api/api-profile-service';
 import { CustomFormControl } from '../../shared/custom-form-control/custom-form-control';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { PageHeader } from '../../shared/page-header/page-header';
 
 type EditableProfile = Pick<User, 'firstName' | 'lastName' | 'username' | 'email'>;
 
@@ -18,7 +19,14 @@ type EditableProfile = Pick<User, 'firstName' | 'lastName' | 'username' | 'email
   selector: 'app-profile',
   styleUrl: './profile.css',
   templateUrl: './profile.html',
-  imports: [FormRoot, MatButtonModule, MatIconModule, MatProgressSpinnerModule, CustomFormControl],
+  imports: [
+    FormRoot,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    CustomFormControl,
+    PageHeader,
+  ],
 })
 export class Profile implements OnInit {
   private readonly authService = inject(AuthenticationService);

@@ -1,0 +1,15 @@
+<header class="mb-8">
+  <p class="mb-2 text-xs font-bold tracking-[1.8px] text-(--primary)">{{ eyebrow() }}</p>
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <h1
+        [id]="titleId()"
+        class="mb-2 text-[clamp(28px,4vw,38px)] leading-tight font-medium tracking-[-1px] text-(--ink)"
+      >
+        {{ title() }}
+      </h1>
+      <p class="m-0 text-sm leading-relaxed text-(--text-muted)">{{ description() }}</p>
+    </div>
+    <ng-content />
+  </div>
+</header>

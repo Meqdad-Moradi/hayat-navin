@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { initRegistrationModel } from '../../../models/registration-model';
 import { CustomFormControl } from '../../shared/custom-form-control/custom-form-control';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { PageHeader } from '../../shared/page-header/page-header';
 
 @Component({
   selector: 'app-register',
@@ -18,6 +19,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatFormFieldModule,
     MatInputModule,
     MatProgressSpinnerModule,
+    PageHeader,
   ],
 })
 export class Register {

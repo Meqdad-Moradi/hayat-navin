@@ -4,6 +4,7 @@ export const environment = {
     baseUrl: 'http://localhost:3000',
     authUrl: 'api/auth',
     usersUrl: 'api/users',
+    personsUrl: 'api/persons',
   },
   apps: {
     profile: {
