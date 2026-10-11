@@ -4,14 +4,8 @@ export const environment = {
     baseUrl: 'http://localhost:3000',
     authUrl: 'api/auth',
     usersUrl: 'api/users',
-    personsUrl: 'api/persons',
   },
   apps: {
-    profile: {
-      route: 'profile',
-      name: 'Profile',
-      icon: 'person',
-    },
     searchstudents: {
       route: 'searchpersons',
       name: 'Search Persons',

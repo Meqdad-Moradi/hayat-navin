@@ -7,8 +7,6 @@ import { authGuard } from './guards/auth-guard';
 import { Sidenav } from './components/navigations/sidenav/sidenav';
 import { userGuard } from './guards/user-guard';
 import { environment } from './environments/environment';
-import { SearchStudents } from './components/pages/search-students/search-students';
-import { Profile } from './components/pages/profile/profile';
 
 export const routes: Routes = [
   {
@@ -20,20 +18,6 @@ export const routes: Routes = [
         path: '',
         component: Sidenav,
         children: [
-          {
-            path: environment.apps.profile.route,
-            component: Profile,
-            data: ['admin'],
-            canActivate: [userGuard],
-            pathMatch: 'full',
-          },
-          {
-            path: environment.apps.searchstudents.route,
-            component: SearchStudents,
-            data: ['admin', 'studen'],
-            canActivate: [userGuard],
-            pathMatch: 'full',
-          },
           {
             path: environment.apps.registration.route,
             component: Register,
