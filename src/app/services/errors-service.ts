@@ -70,10 +70,17 @@ export class ErrorsService {
     title: Signal<string> = signal('Request failed'),
   ): void {
     this.dialog.open(ConfirmDialog, {
+      maxWidth: 450,
       bindings: [inputBinding('title', title), inputBinding('message', message)],
     });
   }
 
+  /**
+   * handleError<T>
+   * @param operation string - operation name like get | post and ...
+   * @param errorAction ErrorAction
+   * @returns Observable<ErrorResponse<T>>
+   */
   public handleError<T>(
     operation: string,
     errorAction: ErrorAction = { showErrorInDialog: true },

@@ -1,0 +1,30 @@
+<section class="mx-auto max-w-5xl py-6" aria-labelledby="users-title">
+  <app-page-header
+    eyebrow="PEOPLE"
+    title="Users"
+    titleId="users-title"
+    description="View and manage the people using the platform."
+  />
+
+  <div
+    class="overflow-hidden rounded-2xl border border-(--surface-border) bg-(--surface) shadow-sm"
+  >
+    @if (isLoading()) {
+      <div
+        class="flex items-center justify-center gap-3 px-6 py-16 text-sm text-(--text-muted)"
+        role="status"
+      >
+        <mat-progress-spinner diameter="22" mode="indeterminate" />
+        Loading users
+      </div>
+    } @else if (users().length === 0) {
+      <p class="m-0 px-6 py-12 text-center text-sm text-(--text-muted)">No users found.</p>
+    } @else {
+      <div class="m-0 p-0">
+        @for (user of users(); track user.id) {
+          <app-user-item [user]="user" (editUser)="editUser($event)" />
+        }
+      </div>
+    }
+  </div>
+</section>

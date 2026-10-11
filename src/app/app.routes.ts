@@ -7,6 +7,7 @@ import { authGuard } from './guards/auth-guard';
 import { Sidenav } from './components/navigations/sidenav/sidenav';
 import { userGuard } from './guards/user-guard';
 import { environment } from './environments/environment';
+import { Users } from './components/pages/users/users';
 
 export const routes: Routes = [
   {
@@ -18,6 +19,10 @@ export const routes: Routes = [
         path: '',
         component: Sidenav,
         children: [
+          {
+            path: environment.apps.searchstudents.route,
+            component: Users,
+          },
           {
             path: environment.apps.registration.route,
             component: Register,
