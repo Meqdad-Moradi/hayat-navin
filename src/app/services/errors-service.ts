@@ -1,6 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { inject, Service } from '@angular/core';
+import { inject, inputBinding, Service, signal, Signal } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Observable, of } from 'rxjs';
+import { ConfirmDialog } from '../components/dialogs/confirm-dialog/confirm-dialog';
 
 interface ErrorAction {
   showErrorInDialog?: boolean;
@@ -15,7 +17,7 @@ export class ErrorResponse<T> {
 
 @Service()
 export class ErrorsService {
-  //   private readonly dialog = inject(MatDialog);
+  private readonly dialog = inject(MatDialog);
 
   // Converts an unknown error into a friendly message for the user.
   public getErrorMessage(error: unknown, operation?: string): string {
@@ -57,31 +59,39 @@ export class ErrorsService {
     return fallbackMessage || 'Server not available. Please try again later!';
   }
 
-  //   // Opens the reusable Material dialog shown to users when a request fails.
-  //   public showErrorDialog(message: string, title = 'Request failed'): void {
-  //     this.dialog.open(ErrorDialog, {
-  //       data: { title, message },
-  //       disableClose: false,
-  //     });
-  //   }
+  // Opens the reusable Material dialog shown to users when a request fails.
+  /**
+   * showErrorDialog
+   * @param message string
+   * @param title string
+   */
+  public showErrorDialog(
+    message: Signal<string>,
+    title: Signal<string> = signal('Request failed'),
+  ): void {
+    this.dialog.open(ConfirmDialog, {
+      bindings: [inputBinding('title', title), inputBinding('message', message)],
+    });
+  }
 
   public handleError<T>(
     operation: string,
     errorAction: ErrorAction = { showErrorInDialog: true },
   ): (error: unknown) => Observable<ErrorResponse<T>> {
     return (error: unknown): Observable<ErrorResponse<T>> => {
-      const message = this.getErrorMessage(error, operation);
+      const message = signal(this.getErrorMessage(error, operation));
 
       if (errorAction.showErrorInDialog) {
         // Show error in a dialog (you can implement your own dialog service)
         console.error(`Error in ${operation}:`, message, error);
+        this.showErrorDialog(message, signal(`Error in ${operation}`));
       } else {
         // Log the error to the console
         console.error(`Error in ${operation}:`, message, error);
       }
 
       const status = error instanceof HttpErrorResponse ? error.status : 0;
-      return of(new ErrorResponse<T>(status, message));
+      return of(new ErrorResponse<T>(status, message()));
     };
   }
 }
