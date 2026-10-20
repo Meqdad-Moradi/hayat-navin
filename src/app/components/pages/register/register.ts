@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, effect, input, signal } from '@angular/core';
 import { email, form, FormField, FormRoot, required } from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,6 +7,8 @@ import { initRegistrationModel } from '../../../models/registration-model';
 import { CustomFormControl } from '../../shared/custom-form-control/custom-form-control';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { PageHeader } from '../../shared/page-header/page-header';
+import { IUser } from '../../../models/user-model';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-register',
@@ -19,10 +21,15 @@ import { PageHeader } from '../../shared/page-header/page-header';
     MatFormFieldModule,
     MatInputModule,
     MatProgressSpinnerModule,
+    MatDialogModule,
     PageHeader,
   ],
 })
 export class Register {
+  readonly user = input<IUser | null>(null);
+
+  protected isUpdating = computed(() => !!this.user());
+
   private registrationModel = signal(initRegistrationModel());
 
   protected registrationForm = form(
@@ -32,7 +39,10 @@ export class Register {
       required(path.email, { message: "Enter the student's email address." });
       email(path.email, { message: 'Enter a valid email address.' });
       required(path.phone, { message: 'Enter the student’s phone number.' });
-      required(path.courseName, { message: 'Enter the course name.' });
+      required(path.courseName, {
+        when: () => !this.isUpdating(),
+        message: 'Enter the course name.',
+      });
     },
     {
       submission: {
@@ -43,11 +53,18 @@ export class Register {
     },
   );
 
-  /**
-   * resetInput
-   * @param fieldName string
-   */
-  protected resetInput(fieldName: string): void {
-    this.registrationModel.update((fields) => ({ ...fields, [fieldName]: '' }));
+  constructor() {
+    effect(() => {
+      if (this.isUpdating()) {
+        // update registration model with the user that getting from users page
+        this.registrationModel.update((val) => {
+          const user = { ...val };
+          user.studentName = this.user()?.name || '';
+          user.phone = this.user()?.phone || '';
+          user.email = this.user()?.email || '';
+          return user;
+        });
+      }
+    });
   }
 }

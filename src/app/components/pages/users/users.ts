@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, inputBinding, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -6,11 +6,13 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { IUser } from '../../../models/user-model';
 import { ApiUsersService } from '../../../services/api/api-users-service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ErrorResponse } from '../../../services/errors-service';
 import { PageHeader } from '../../shared/page-header/page-header';
 import { environment } from '../../../environments/environment';
 import { UserItem } from './user-item/user-item';
+import { MatDialog } from '@angular/material/dialog';
+import { Register } from '../register/register';
 
 @Component({
   selector: 'app-users',
@@ -29,6 +31,7 @@ export class Users implements OnInit {
   private readonly apiUsersService = inject(ApiUsersService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
+  private readonly dialog = inject(MatDialog);
 
   protected isLoading = signal(true);
   protected users = signal<IUser[]>([]);
@@ -59,9 +62,13 @@ export class Users implements OnInit {
    * @param user IUser
    */
   protected editUser(user: IUser): void {
-    this.router.navigate(['/', environment.apps.registration.route], {
-      queryParams: { userId: user.id },
-      state: { user },
+    this.dialog.open(Register, {
+      minWidth: 600,
+      bindings: [inputBinding('user', signal(user))],
     });
+    // this.router.navigate(['/', environment.apps.registration.route], {
+    //   queryParams: { userId: user.id },
+    //   state: { user },
+    // });
   }
 }

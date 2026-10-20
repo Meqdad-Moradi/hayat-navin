@@ -1,9 +1,13 @@
 <section class="mx-auto max-w-3xl py-6" aria-labelledby="registration-title">
   <app-page-header
-    eyebrow="COURSE ENROLLMENT"
-    title="Register a student"
+    [eyebrow]="isUpdating() ? 'USER MANAGEMENT' : 'COURSE ENROLLMENT'"
+    [title]="isUpdating() ? 'Update user' : 'Register a student'"
     titleId="registration-title"
-    description="Enter the student's details and the course they're joining."
+    [description]="
+      isUpdating()
+        ? 'Update the current user information!'
+        : 'Enter the student\'s details and the course they\'re joining.'
+    "
   />
 
   <div class="rounded-2xl border border-(--surface-border) bg-(--surface) p-5 shadow-sm sm:p-8">
@@ -21,11 +25,7 @@
         name="email"
       />
 
-      <app-custom-form-control
-        [field]="registrationForm.phone"
-        label="Phone number"
-        name="phone"
-      />
+      <app-custom-form-control [field]="registrationForm.phone" label="Phone number" name="phone" />
 
       <app-custom-form-control
         [field]="registrationForm.courseName"
@@ -38,12 +38,13 @@
           class="min-h-12 w-full rounded-xl sm:w-auto sm:min-w-44"
           type="submit"
           matButton="filled"
+          [mat-dialog-close]
         >
           @if (registrationForm().submitting()) {
             <mat-progress-spinner diameter="20" mode="indeterminate" />
-            Submitting
+            {{ isUpdating() ? 'Updating' : 'Submitting' }}
           } @else {
-            Review registration
+            {{ this.isUpdating() ? 'Update User' : 'Review registration' }}
           }
         </button>
       </div>
