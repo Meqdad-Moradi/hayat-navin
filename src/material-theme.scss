@@ -16,10 +16,14 @@ html {
   );
   @include mat.theme-overrides(
     (
-      primary: var(--primary), // Applies the application primary color
-      on-primary: var(--on-primary), // Sets foreground on primary surfaces
-      surface: var(--canvas), // Applies the application surface background
-      on-surface: var(--ink), // Sets foreground on application surfaces
+      primary: var(--primary),
+      // Applies the application primary color
+      on-primary: var(--on-primary),
+      // Sets foreground on primary surfaces
+      surface: var(--canvas),
+      // Applies the application surface background
+      on-surface: var(--ink),
+      // Sets foreground on application surfaces
     )
   );
   @include mat.sidenav-overrides(
