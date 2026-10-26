@@ -13,31 +13,22 @@
   <div class="rounded-2xl border border-(--surface-border) bg-(--surface) p-5 shadow-sm sm:p-8">
     <form class="grid grid-cols-1 gap-x-5 gap-y-2 md:grid-cols-2" [formRoot]="registrationForm">
       <app-custom-form-control
-        [field]="registrationForm.studentName"
+        [formField]="registrationForm.studentName"
         label="Student's full name"
-        name="studentName"
       />
 
-      <app-custom-form-control
-        [field]="registrationForm.email"
-        label="Email"
-        type="email"
-        name="email"
-      />
+      <app-custom-form-control [formField]="registrationForm.email" label="Email" type="email" />
 
-      <app-custom-form-control [field]="registrationForm.phone" label="Phone number" name="phone" />
+      <app-custom-form-control [formField]="registrationForm.phone" label="Phone number" />
 
-      <app-custom-form-control
-        [field]="registrationForm.courseName"
-        label="Course name"
-        name="courseName"
-      />
+      <app-custom-form-control [formField]="registrationForm.courseName" label="Course name" />
 
       <div class="flex justify-end pt-2 md:col-span-2">
         <button
           class="w-full rounded-xl sm:w-auto sm:min-w-44"
           type="submit"
           matButton="filled"
+          [disabled]="registrationForm().invalid() || registrationForm().submitting()"
           [mat-dialog-close]
         >
           @if (registrationForm().submitting()) {

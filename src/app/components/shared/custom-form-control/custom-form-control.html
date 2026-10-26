@@ -1,16 +1,30 @@
 <mat-form-field class="w-full" appearance="outline">
   <mat-label>{{ label() }}</mat-label>
 
-  @let formField = field()();
+  <input
+    matInput
+    [type]="type()"
+    [value]="value()"
+    (input)="value.set($any($event.target).value)"
+    [required]="required()"
+    [disabled]="disabled()"
+    (blur)="touch.emit()"
+  />
 
-  <input matInput [type]="type()" [formField]="field()" />
+  @if (value()) {
+    <button
+      type="button"
+      mat-icon-button
+      matSuffix
+      tabIndex="-1"
+      [disabled]="disabled()"
+      (click)="resetInput()"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  }
 
-  <button type="button" matIconButton matSuffix tabIndex="-1" (click)="resetInput()">
-    <mat-icon>close</mat-icon>
-  </button>
-
-  <!-- display error -->
-  @if (formField.touched() && formField.invalid()) {
-    <mat-error>{{ formField.errors()[0]?.message }}</mat-error>
+  @if (showErrors()) {
+    <mat-error>{{ errors()[0]?.message }}</mat-error>
   }
 </mat-form-field>

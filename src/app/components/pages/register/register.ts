@@ -1,5 +1,5 @@
 import { Component, computed, effect, input, signal } from '@angular/core';
-import { email, form, FormField, FormRoot, required } from '@angular/forms/signals';
+import { disabled, email, form, FormField, FormRoot, required } from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -23,6 +23,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatProgressSpinnerModule,
     MatDialogModule,
     PageHeader,
+    FormField,
   ],
 })
 export class Register {
