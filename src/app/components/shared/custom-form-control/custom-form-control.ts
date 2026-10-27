@@ -44,4 +44,8 @@ export class CustomFormControl implements FormValueControl<string> {
   protected resetInput(): void {
     this.value.set('');
   }
+
+  public focus(): void {
+    this.matInput()?.focus();
+  }
 }
