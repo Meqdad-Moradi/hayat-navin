@@ -1,0 +1,57 @@
+<section class="mx-auto max-w-5xl py-6">
+  <app-page-header
+    eyebrow="NEONCORE"
+    title="Join the nexus"
+    titleId="neoncore-title"
+    description="Initialize your neoncore identity."
+  />
+
+  <form
+    class="w-full flex flex-col gap-2 bg-(--mat-sys-surface) p-8"
+    novalidate
+    [formRoot]="neoncornForm"
+  >
+    <h1>New Operator</h1>
+
+    <app-custom-form-control [formField]="neoncornForm.callsign" label="Callsign" />
+    <app-custom-form-control [formField]="neoncornForm.email" label="Email" type="email" />
+
+    <div class="flex flex-col mb-6">
+      <app-custom-form-control [formField]="neoncornForm.password" label="Password" />
+
+      <div class="flex items-center gap-4 mt-2">
+        @for (rule of passwordRules; track rule.label) {
+          <span
+            class="border-2 border-gray-700 w-full transition duration-300"
+            [ngClass]="rule.valid() ? 'border-(--welcome-eyebrow)!' : ''"
+          ></span>
+        }
+      </div>
+    </div>
+
+    <app-custom-form-control [formField]="neoncornForm.confirmPassword" label="Confirm Password" />
+    <mat-checkbox [formField]="neoncornForm.acceptTerm">
+      <span>
+        I accept the
+        <a
+          class="text-(--primary) underline font-semibold"
+          href="http://www.google.com/"
+          target="_blank"
+          >Terms</a
+        >
+        and
+        <a
+          class="text-(--primary) underline font-semibold"
+          href="http://wwww.google.com/"
+          target="_blank"
+        >
+          Privacy Policy </a
+        >.
+      </span>
+    </mat-checkbox>
+
+    <button class="uppercase! leading-3! mt-4!" matButton="filled" type="submit">
+      Initialize account
+    </button>
+  </form>
+</section>

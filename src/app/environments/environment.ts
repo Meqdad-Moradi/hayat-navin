@@ -16,5 +16,10 @@ export const environment = {
       name: 'Registration',
       icon: 'app_registration',
     },
+    neoncore: {
+      route: 'neoncore',
+      name: 'Neon Core',
+      icon: 'touch_app',
+    },
   },
 };

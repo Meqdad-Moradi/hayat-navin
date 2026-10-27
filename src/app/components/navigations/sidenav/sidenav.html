@@ -35,6 +35,22 @@
         </button>
 
         <mat-divider></mat-divider>
+
+        <!-- regiseration -->
+        <button
+          mat-list-item
+          [routerLink]="['/', appRoutes.neoncore.route]"
+          routerLinkActive="border-l-6! border-(--primary)!"
+          [routerLinkActiveOptions]="{ exact: true }"
+          onclick="blur()"
+        >
+          <span class="material-icons-outlined" matListItemIcon>
+            {{ appRoutes.neoncore.icon }}
+          </span>
+          <span matListItemTitle>{{ appRoutes.neoncore.name }}</span>
+        </button>
+
+        <mat-divider></mat-divider>
       </mat-action-list>
 
       <!-- logo -->

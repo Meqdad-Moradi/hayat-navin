@@ -8,6 +8,7 @@ import { Sidenav } from './components/navigations/sidenav/sidenav';
 import { userGuard } from './guards/user-guard';
 import { environment } from './environments/environment';
 import { Users } from './components/pages/users/users';
+import { Neoncore } from './components/pages/neoncore/neoncore';
 
 export const routes: Routes = [
   {
@@ -29,6 +30,13 @@ export const routes: Routes = [
             data: ['admin'],
             canActivate: [userGuard],
             pathMatch: 'full',
+          },
+          {
+            path: environment.apps.neoncore.route,
+            component: Neoncore,
+            pathMatch: 'full',
+            data: ['admin'],
+            canActivate: [userGuard],
           },
         ],
       },
