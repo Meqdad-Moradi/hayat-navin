@@ -11,6 +11,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BrandLogo } from '../../shared/brand-logo/brand-logo';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CustomFormControl } from '../../shared/custom-form-control/custom-form-control';
+import { requiredValidation } from '../../../models/neoncorn';
 
 @Component({
   selector: 'app-login',
@@ -27,6 +29,7 @@ import { ActivatedRoute, Router } from '@angular/router';
     FormField,
     FormRoot,
     BrandLogo,
+    CustomFormControl,
   ],
 })
 export class Login {
@@ -36,13 +39,10 @@ export class Login {
 
   private loginModel = signal(initLoginModel());
 
-  protected hasAttemptedSubmit = signal(false);
-
   protected loginForm = form(
     this.loginModel,
     (path) => {
-      required(path.email, { message: "Can't be empty!" });
-      required(path.password, { message: "Can't be empty!" });
+      requiredValidation(path, ['email', 'password']);
       email(path.email, { message: 'Invalid email format!' });
     },
     {
@@ -58,19 +58,12 @@ export class Login {
           this.router.navigateByUrl(returnUrl);
           return undefined;
         },
+        onInvalid: (field) => {
+          const firstError = field().errorSummary()[0];
+          firstError?.fieldTree().focusBoundControl();
+        },
+        ignoreValidators: 'none',
       },
     },
   );
-
-  /**
-   * resetInput
-   * @param fieldName string
-   */
-  protected resetInput(fieldName: string): void {
-    this.loginModel.update((model) => ({ ...model, [fieldName]: '' }));
-  }
-
-  protected onSubmit(): void {
-    this.hasAttemptedSubmit.set(true);
-  }
 }

@@ -37,50 +37,18 @@
         }
 
         <!-- email -->
-        <mat-form-field class="w-full" appearance="outline">
-          <mat-label>Email address</mat-label>
-          <input matInput type="email" autocomplete="email" [formField]="loginForm.email" />
-          <button
-            type="button"
-            matIconButton
-            matSuffix
-            aria-label="Clear email address"
-            tabIndex="-1"
-            (click)="resetInput('email')"
-          >
-            <mat-icon>close</mat-icon>
-          </button>
-          @if (loginForm.email().touched() && loginForm.email().errors().length) {
-            <mat-error>{{ loginForm.email().errors()[0]?.message }}</mat-error>
-          }
-        </mat-form-field>
+        <app-custom-form-control
+          [formField]="loginForm.email"
+          label="Email Address"
+          inputType="email"
+        />
 
         <!-- password -->
-        <mat-form-field class="w-full" appearance="outline">
-          <mat-label>Password</mat-label>
-          <input
-            matInput
-            type="password"
-            autocomplete="current-password"
-            [formField]="loginForm.password"
-          />
-          <button
-            type="button"
-            matIconButton
-            matSuffix
-            aria-label="Clear password"
-            tabIndex="-1"
-            (click)="resetInput('password')"
-          >
-            <mat-icon>close</mat-icon>
-          </button>
-          @if (
-            (loginForm.password().touched() || hasAttemptedSubmit()) &&
-            loginForm.password().errors().length
-          ) {
-            <mat-error>{{ loginForm.password().errors()[0]?.message }}</mat-error>
-          }
-        </mat-form-field>
+        <app-custom-form-control
+          [formField]="loginForm.password"
+          label="Password"
+          inputType="password"
+        />
 
         <button
           class="mt-[9px] flex w-full items-center justify-center gap-2.5 rounded-xl bg-(--ink) text-[15px] font-medium tracking-[0.1px] text-(--on-primary) transition duration-150 hover:-translate-y-px hover:bg-(--primary) motion-reduce:transition-none"

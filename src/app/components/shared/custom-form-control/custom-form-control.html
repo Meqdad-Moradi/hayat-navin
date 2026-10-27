@@ -4,7 +4,7 @@
   <input
     #inputElement
     matInput
-    [type]="type()"
+    [type]="currentType()"
     [value]="value()"
     (input)="value.set($any($event.target).value)"
     [required]="required()"
@@ -22,6 +22,20 @@
       (click)="resetInput()"
     >
       <mat-icon>close</mat-icon>
+    </button>
+  }
+
+  @if (inputType() === 'password') {
+    <button
+      type="button"
+      mat-icon-button
+      matSuffix
+      tabIndex="-1"
+      [matTooltip]="currentType() === 'password' ? 'Show password' : 'Hide password'"
+      [disabled]="disabled()"
+      (click)="togglePasswordType()"
+    >
+      <mat-icon>{{ passwordVisibilityIcon() }}</mat-icon>
     </button>
   }
 
